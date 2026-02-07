@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Valentine's Week Timeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+  <body>
+    <button id="musicToggle" class="music-toggle" type="button" aria-pressed="false">
+      <span aria-hidden="true">♫</span>
+      <span id="musicToggleLabel">Ambient Off</span>
+    </button>
+
+    <header class="hero" id="hero">
+      <div class="hero-texture" aria-hidden="true">
+        <span class="petal p1"></span>
+        <span class="petal p2"></span>
+        <span class="petal p3"></span>
+        <span class="petal p4"></span>
+        <span class="petal p5"></span>
+      </div>
+      <div class="hero-content">
+        <p class="hero-kicker">Valentine's Week <span id="weekYear"></span></p>
+        <h1>Our Story</h1>
+        <p class="hero-subtitle">One day. One feeling. One forever.</p>
+        <button id="beginJourney" class="hero-cta" type="button">Begin the Journey ❤️</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="timeline-section" id="timeline" aria-labelledby="timelineHeading">
+        <div class="section-intro">
+          <h2 id="timelineHeading">Valentine's Week Timeline</h2>
+          <p>Unlocked by time, kept forever.</p>
+        </div>
+
+        <div class="timeline-shell">
+          <div class="timeline-line" aria-hidden="true"></div>
+          <div id="timelineCards" class="timeline-cards"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="dayModal" class="day-modal" hidden>
+      <div id="modalBackdrop" class="day-modal-backdrop"></div>
+      <article
+        class="day-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dayTitle"
+        aria-describedby="dayMessage"
+      >
+        <button id="closeDayTop" class="modal-close" type="button">Back to Timeline</button>
+        <p id="dayDate" class="day-date"></p>
+        <h3 id="dayTitle" class="day-title"></h3>
+        <p id="dayTheme" class="day-theme"></p>
+        <div class="day-divider" aria-hidden="true"></div>
+
+        <div class="day-gallery">
+          <button id="prevImage" class="gallery-nav" type="button" aria-label="Previous image">
+            ‹
+          </button>
+          <figure class="day-image-wrap">
+            <img id="dayImage" src="" alt="" />
+          </figure>
+          <button id="nextImage" class="gallery-nav" type="button" aria-label="Next image">
+            ›
+          </button>
+        </div>
+        <p id="imageCounter" class="image-counter"></p>
+
+        <div id="dayMessage" class="day-message"></div>
+        <div id="ambientLayer" class="ambient-layer" aria-hidden="true"></div>
+
+        <button id="backToTimeline" class="back-button" type="button">Back to Timeline</button>
+      </article>
+    </div>
+
+    <script type="module" src="scripts/main.js"></script>
+  </body>
+</html>
