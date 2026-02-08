@@ -12,7 +12,22 @@
     />
     <link rel="stylesheet" href="styles/main.css" />
   </head>
-  <body>
+  <body class="locked">
+    <section id="siteLock" class="site-lock" aria-label="Site password gate">
+      <div class="site-lock-bg" aria-hidden="true"></div>
+      <div class="site-lock-panel">
+        <p class="site-lock-kicker">Private Access</p>
+        <h2>Our Story</h2>
+        <p class="site-lock-subtitle">Enter the passcode to continue</p>
+        <form id="siteLockForm" class="site-lock-form" autocomplete="off">
+          <label class="sr-only" for="sitePasscode">Passcode</label>
+          <input id="sitePasscode" type="password" placeholder="Enter passcode" required />
+          <button type="submit">Unlock</button>
+        </form>
+        <p id="siteLockError" class="site-lock-error" hidden>Incorrect passcode. Try again.</p>
+      </div>
+    </section>
+
     <header class="hero" id="hero">
       <div class="hero-texture" aria-hidden="true">
         <span class="petal p1"></span>

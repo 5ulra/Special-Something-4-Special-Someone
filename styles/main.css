@@ -53,6 +53,10 @@ body.modal-open {
   overflow: hidden;
 }
 
+body.locked {
+  overflow: hidden;
+}
+
 h1,
 h2,
 h3,
@@ -66,6 +70,110 @@ h4 {
 
 p {
   margin: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.site-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: grid;
+  place-items: center;
+  padding: 1.2rem;
+}
+
+.site-lock[hidden] {
+  display: none;
+}
+
+.site-lock-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(243, 216, 219, 0.58), transparent 36%),
+    radial-gradient(circle at 82% 78%, rgba(237, 230, 245, 0.55), transparent 34%),
+    linear-gradient(150deg, #fffaf6, #f8ede3 48%, #f6e8ee);
+}
+
+.site-lock-panel {
+  position: relative;
+  width: min(520px, 100%);
+  padding: clamp(1.9rem, 4vw, 2.8rem);
+  text-align: center;
+  border-radius: 26px;
+  border: 1px solid rgba(193, 140, 123, 0.3);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 24px 44px rgba(123, 88, 79, 0.18);
+  backdrop-filter: blur(8px);
+}
+
+.site-lock-kicker {
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #8b6b63;
+}
+
+.site-lock-panel h2 {
+  margin-top: 0.55rem;
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  color: #7d4d56;
+}
+
+.site-lock-subtitle {
+  margin-top: 0.4rem;
+  color: #8f6f67;
+}
+
+.site-lock-form {
+  margin-top: 1.1rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.site-lock-form input {
+  width: 100%;
+  border: 1px solid rgba(193, 140, 123, 0.42);
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+  font: inherit;
+  text-align: center;
+  color: #6f4a43;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.site-lock-form input:focus-visible {
+  outline: none;
+  border-color: rgba(193, 140, 123, 0.78);
+  box-shadow: 0 0 0 3px rgba(193, 140, 123, 0.18);
+}
+
+.site-lock-form button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.72rem 1.25rem;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  background: linear-gradient(130deg, #bd7c8b, #cd8a7f 52%, #dfb393);
+  box-shadow: 0 10px 22px rgba(169, 113, 110, 0.27);
+}
+
+.site-lock-error {
+  margin-top: 0.85rem;
+  color: #a8455b;
+  font-size: 0.95rem;
 }
 
 .hero {

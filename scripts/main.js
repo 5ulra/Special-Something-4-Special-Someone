@@ -1,6 +1,10 @@
 import { valentineDays } from "../days/dayData.js";
 
 const elements = {
+  siteLock: document.getElementById("siteLock"),
+  siteLockForm: document.getElementById("siteLockForm"),
+  sitePasscode: document.getElementById("sitePasscode"),
+  siteLockError: document.getElementById("siteLockError"),
   weekYear: document.getElementById("weekYear"),
   beginJourney: document.getElementById("beginJourney"),
   timeline: document.getElementById("timeline"),
@@ -25,6 +29,7 @@ const elements = {
 let activeDay = null;
 let activeImageIndex = 0;
 let midnightTimer = 0;
+const ACCESS_PASSWORD = "Bodi";
 const FIREWORK_COLORS = ["#ff4f7a", "#ffd166", "#5eead4", "#60a5fa", "#f59e0b", "#e879f9"];
 const fireworksState = {
   active: false,
@@ -54,6 +59,43 @@ function getUnlockMessage(day) {
 
 function getDisplayDate(day, year) {
   return `February ${day.dayOfMonth}, ${year}`;
+}
+
+function unlockSite() {
+  document.body.classList.remove("locked");
+  elements.siteLock?.setAttribute("hidden", "hidden");
+}
+
+function showLockError() {
+  if (elements.siteLockError) {
+    elements.siteLockError.hidden = false;
+  }
+}
+
+function initializeSiteLock() {
+  if (!elements.siteLockForm || !elements.sitePasscode) {
+    return;
+  }
+
+  elements.sitePasscode.focus();
+
+  elements.siteLockForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const entered = elements.sitePasscode?.value ?? "";
+    if (entered.trim() === ACCESS_PASSWORD) {
+      if (elements.siteLockError) {
+        elements.siteLockError.hidden = true;
+      }
+      unlockSite();
+      return;
+    }
+
+    showLockError();
+    if (elements.sitePasscode) {
+      elements.sitePasscode.value = "";
+      elements.sitePasscode.focus();
+    }
+  });
 }
 
 function randomBetween(min, max) {
@@ -510,6 +552,10 @@ function populateDayModal() {
 }
 
 function openDay(dayId) {
+  if (document.body.classList.contains("locked")) {
+    return;
+  }
+
   const day = valentineDays.find((item) => item.id === dayId);
   if (!day || !isDayUnlocked(day) || !elements.dayModal) {
     return;
@@ -640,6 +686,7 @@ function init() {
   renderTimeline();
   scheduleTimelineRefresh();
   attachEventListeners();
+  initializeSiteLock();
 }
 
 init();
