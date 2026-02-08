@@ -12,34 +12,33 @@ const elements = {
   dayDate: document.getElementById("dayDate"),
   dayTitle: document.getElementById("dayTitle"),
   dayTheme: document.getElementById("dayTheme"),
+  fireworksCanvas: document.getElementById("fireworksCanvas"),
   dayImage: document.getElementById("dayImage"),
+  dayVideo: document.getElementById("dayVideo"),
   imageCounter: document.getElementById("imageCounter"),
   dayMessage: document.getElementById("dayMessage"),
   prevImage: document.getElementById("prevImage"),
   nextImage: document.getElementById("nextImage"),
-  ambientLayer: document.getElementById("ambientLayer"),
-  musicToggle: document.getElementById("musicToggle"),
-  musicToggleLabel: document.getElementById("musicToggleLabel")
-};
-
-const MUSIC_TRACK_FILE = "It's Been a Long, Long Time (Instrumental) - Harry James & Kitty Kallen.mp3";
-const TARGET_MUSIC_VOLUME = 0.12;
-const TOGGLE_FADE_DURATION_MS = 900;
-const DEFAULT_CROSSFADE_SECONDS = 5;
-
-const audioState = {
-  enabled: false,
-  activeTrack: null,
-  standbyTrack: null,
-  playersReady: false,
-  fadeHandle: 0,
-  crossfadeHandle: 0,
-  isCrossfading: false
+  ambientLayer: document.getElementById("ambientLayer")
 };
 
 let activeDay = null;
 let activeImageIndex = 0;
 let midnightTimer = 0;
+const FIREWORK_COLORS = ["#ff4f7a", "#ffd166", "#5eead4", "#60a5fa", "#f59e0b", "#e879f9"];
+const fireworksState = {
+  active: false,
+  rafHandle: 0,
+  lastTick: 0,
+  nextLaunchAt: 0,
+  rockets: [],
+  particles: [],
+  rings: [],
+  flashes: [],
+  width: 0,
+  height: 0,
+  dpr: 1
+};
 
 function getUnlockDate(dayOfMonth, now = new Date()) {
   return new Date(now.getFullYear(), 1, dayOfMonth, 0, 0, 0, 0);
@@ -55,6 +54,299 @@ function getUnlockMessage(day) {
 
 function getDisplayDate(day, year) {
   return `February ${day.dayOfMonth}, ${year}`;
+}
+
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function resizeFireworksCanvas() {
+  if (!elements.fireworksCanvas) {
+    return;
+  }
+
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+
+  fireworksState.width = width;
+  fireworksState.height = height;
+  fireworksState.dpr = dpr;
+
+  elements.fireworksCanvas.width = Math.floor(width * dpr);
+  elements.fireworksCanvas.height = Math.floor(height * dpr);
+  elements.fireworksCanvas.style.width = `${width}px`;
+  elements.fireworksCanvas.style.height = `${height}px`;
+}
+
+function spawnFireworkRocket() {
+  const height = fireworksState.height || window.innerHeight;
+  const width = fireworksState.width || window.innerWidth;
+
+  fireworksState.rockets.push({
+    x: randomBetween(width * 0.1, width * 0.9),
+    y: height + randomBetween(18, 50),
+    vx: randomBetween(-56, 56),
+    vy: randomBetween(-1040, -790),
+    targetY: randomBetween(height * 0.1, height * 0.42),
+    hue: randomBetween(0, 360),
+    radius: randomBetween(2.6, 4.1),
+    trail: [],
+    trailMax: Math.round(randomBetween(8, 13))
+  });
+}
+
+function burstFireworkRocket(rocket) {
+  const count = Math.round(randomBetween(110, 172));
+  const ringColor = FIREWORK_COLORS[Math.floor(randomBetween(0, FIREWORK_COLORS.length))];
+  fireworksState.rings.push({
+    x: rocket.x,
+    y: rocket.y,
+    radius: randomBetween(8, 24),
+    life: 0,
+    maxLife: randomBetween(0.46, 0.8),
+    color: ringColor
+  });
+
+  fireworksState.flashes.push({
+    x: rocket.x,
+    y: rocket.y,
+    life: 0,
+    maxLife: randomBetween(0.1, 0.18),
+    radius: randomBetween(80, 140),
+    color: ringColor
+  });
+
+  for (let i = 0; i < count; i += 1) {
+    const angle = randomBetween(0, Math.PI * 2);
+    const speed = randomBetween(170, 540);
+    const color = FIREWORK_COLORS[i % FIREWORK_COLORS.length];
+    fireworksState.particles.push({
+      x: rocket.x,
+      y: rocket.y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 0,
+      maxLife: randomBetween(1.15, 2.25),
+      radius: randomBetween(2, 4.8),
+      color
+    });
+  }
+}
+
+function renderFireworksFrame(now) {
+  if (!fireworksState.active || !elements.fireworksCanvas) {
+    return;
+  }
+
+  const context = elements.fireworksCanvas.getContext("2d");
+  if (!context) {
+    return;
+  }
+
+  if (!fireworksState.lastTick) {
+    fireworksState.lastTick = now;
+  }
+
+  const dt = Math.min(0.034, (now - fireworksState.lastTick) / 1000);
+  fireworksState.lastTick = now;
+
+  context.setTransform(fireworksState.dpr, 0, 0, fireworksState.dpr, 0, 0);
+  context.clearRect(0, 0, fireworksState.width, fireworksState.height);
+  context.globalCompositeOperation = "source-over";
+  context.fillStyle = "rgba(22, 12, 31, 0.16)";
+  context.fillRect(0, 0, fireworksState.width, fireworksState.height);
+  context.globalCompositeOperation = "lighter";
+
+  if (now >= fireworksState.nextLaunchAt) {
+    spawnFireworkRocket();
+    if (Math.random() > 0.2) {
+      spawnFireworkRocket();
+    }
+    if (Math.random() > 0.72) {
+      spawnFireworkRocket();
+    }
+    fireworksState.nextLaunchAt = now + randomBetween(180, 430);
+  }
+
+  for (let i = fireworksState.rockets.length - 1; i >= 0; i -= 1) {
+    const rocket = fireworksState.rockets[i];
+    rocket.x += rocket.vx * dt;
+    rocket.y += rocket.vy * dt;
+    rocket.vx *= 0.997;
+    rocket.vy += 360 * dt;
+
+    rocket.trail.push({ x: rocket.x, y: rocket.y });
+    if (rocket.trail.length > rocket.trailMax) {
+      rocket.trail.shift();
+    }
+
+    if (rocket.trail.length > 1) {
+      context.beginPath();
+      context.moveTo(rocket.trail[0].x, rocket.trail[0].y);
+      for (let j = 1; j < rocket.trail.length; j += 1) {
+        context.lineTo(rocket.trail[j].x, rocket.trail[j].y);
+      }
+      context.strokeStyle = `hsla(${rocket.hue}, 98%, 72%, 0.44)`;
+      context.lineWidth = rocket.radius * 1.15;
+      context.lineCap = "round";
+      context.stroke();
+    }
+
+    context.fillStyle = `hsla(${rocket.hue}, 100%, 75%, 0.28)`;
+    context.beginPath();
+    context.arc(rocket.x, rocket.y, rocket.radius * 3.6, 0, Math.PI * 2);
+    context.fill();
+
+    context.fillStyle = `hsla(${rocket.hue}, 94%, 70%, 0.95)`;
+    context.beginPath();
+    context.arc(rocket.x, rocket.y, rocket.radius, 0, Math.PI * 2);
+    context.fill();
+
+    if (rocket.y <= rocket.targetY || rocket.vy >= -38) {
+      burstFireworkRocket(rocket);
+      fireworksState.rockets.splice(i, 1);
+    }
+  }
+
+  for (let i = fireworksState.rings.length - 1; i >= 0; i -= 1) {
+    const ring = fireworksState.rings[i];
+    ring.life += dt;
+    if (ring.life >= ring.maxLife) {
+      fireworksState.rings.splice(i, 1);
+      continue;
+    }
+
+    const progress = ring.life / ring.maxLife;
+    ring.radius += 620 * dt;
+    context.strokeStyle = ring.color;
+    context.globalAlpha = Math.max(0, (1 - progress) * 0.65);
+    context.lineWidth = 4.4 * (1 - progress) + 1;
+    context.beginPath();
+    context.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
+    context.stroke();
+    context.globalAlpha = 1;
+  }
+
+  for (let i = fireworksState.flashes.length - 1; i >= 0; i -= 1) {
+    const flash = fireworksState.flashes[i];
+    flash.life += dt;
+    if (flash.life >= flash.maxLife) {
+      fireworksState.flashes.splice(i, 1);
+      continue;
+    }
+
+    const progress = flash.life / flash.maxLife;
+    const radius = flash.radius * (0.5 + progress);
+    const gradient = context.createRadialGradient(flash.x, flash.y, 0, flash.x, flash.y, radius);
+    gradient.addColorStop(0, `rgba(255,255,255,${(1 - progress) * 0.38})`);
+    gradient.addColorStop(0.35, `rgba(255,229,188,${(1 - progress) * 0.22})`);
+    gradient.addColorStop(1, "rgba(255,255,255,0)");
+    context.fillStyle = gradient;
+    context.beginPath();
+    context.arc(flash.x, flash.y, radius, 0, Math.PI * 2);
+    context.fill();
+  }
+
+  if (fireworksState.particles.length > 2800) {
+    fireworksState.particles.splice(0, fireworksState.particles.length - 2800);
+  }
+
+  for (let i = fireworksState.particles.length - 1; i >= 0; i -= 1) {
+    const particle = fireworksState.particles[i];
+    particle.life += dt;
+
+    if (particle.life >= particle.maxLife) {
+      fireworksState.particles.splice(i, 1);
+      continue;
+    }
+
+    const progress = particle.life / particle.maxLife;
+    const fade = clamp(1 - progress, 0, 1);
+    particle.vx *= 0.986;
+    particle.vy = particle.vy * 0.986 + 340 * dt;
+    particle.x += particle.vx * dt;
+    particle.y += particle.vy * dt;
+
+    context.strokeStyle = particle.color;
+    context.globalAlpha = fade * 0.35;
+    context.lineWidth = Math.max(1, particle.radius * 0.48);
+    context.beginPath();
+    context.moveTo(particle.x, particle.y);
+    context.lineTo(particle.x - particle.vx * 0.013, particle.y - particle.vy * 0.013);
+    context.stroke();
+
+    context.fillStyle = particle.color;
+    context.globalAlpha = fade * 0.24;
+    context.beginPath();
+    context.arc(particle.x, particle.y, particle.radius * 2.35, 0, Math.PI * 2);
+    context.fill();
+
+    context.globalAlpha = fade * 0.96;
+    context.beginPath();
+    context.arc(particle.x, particle.y, particle.radius * (1 - progress * 0.24), 0, Math.PI * 2);
+    context.fill();
+    context.globalAlpha = 1;
+  }
+
+  context.globalAlpha = 1;
+  context.globalCompositeOperation = "source-over";
+  fireworksState.rafHandle = window.requestAnimationFrame(renderFireworksFrame);
+}
+
+function startValentineFireworks() {
+  if (!elements.dayModal || !elements.fireworksCanvas || fireworksState.active) {
+    return;
+  }
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  fireworksState.active = true;
+  fireworksState.lastTick = 0;
+  fireworksState.nextLaunchAt = performance.now() + 120;
+  fireworksState.rockets = [];
+  fireworksState.particles = [];
+  fireworksState.rings = [];
+  fireworksState.flashes = [];
+  elements.dayModal.classList.add("is-fireworks");
+
+  resizeFireworksCanvas();
+  window.addEventListener("resize", resizeFireworksCanvas);
+  fireworksState.rafHandle = window.requestAnimationFrame(renderFireworksFrame);
+}
+
+function stopValentineFireworks() {
+  if (!elements.dayModal || !elements.fireworksCanvas) {
+    return;
+  }
+
+  fireworksState.active = false;
+  fireworksState.lastTick = 0;
+  fireworksState.nextLaunchAt = 0;
+  fireworksState.rockets = [];
+  fireworksState.particles = [];
+  fireworksState.rings = [];
+  fireworksState.flashes = [];
+
+  if (fireworksState.rafHandle) {
+    window.cancelAnimationFrame(fireworksState.rafHandle);
+    fireworksState.rafHandle = 0;
+  }
+
+  window.removeEventListener("resize", resizeFireworksCanvas);
+  elements.dayModal.classList.remove("is-fireworks");
+
+  const context = elements.fireworksCanvas.getContext("2d");
+  if (context) {
+    context.setTransform(fireworksState.dpr, 0, 0, fireworksState.dpr, 0, 0);
+    context.clearRect(0, 0, fireworksState.width || window.innerWidth, fireworksState.height || window.innerHeight);
+  }
 }
 
 function renderTimeline() {
@@ -93,14 +385,57 @@ function renderTimeline() {
   });
 }
 
+function isVideoMedia(media) {
+  if (!media || typeof media.src !== "string") {
+    return false;
+  }
+
+  return media.type === "video" || /\.mp4($|\?)/i.test(media.src);
+}
+
 function renderActiveImage() {
-  if (!activeDay || !elements.dayImage || !elements.imageCounter) {
+  if (!activeDay || !elements.imageCounter) {
     return;
   }
 
-  const image = activeDay.images[activeImageIndex];
-  elements.dayImage.src = image.src;
-  elements.dayImage.alt = image.alt;
+  const media = activeDay.images[activeImageIndex];
+  if (!media || (!elements.dayImage && !elements.dayVideo)) {
+    return;
+  }
+
+  const showVideo = isVideoMedia(media);
+  if (showVideo) {
+    if (elements.dayImage) {
+      elements.dayImage.style.display = "none";
+    }
+
+    if (elements.dayVideo) {
+      elements.dayVideo.style.display = "block";
+      if (elements.dayVideo.getAttribute("src") !== media.src) {
+        elements.dayVideo.src = media.src;
+      }
+      elements.dayVideo.setAttribute("aria-label", media.alt || "");
+      const playAttempt = elements.dayVideo.play();
+      if (playAttempt && typeof playAttempt.catch === "function") {
+        playAttempt.catch(() => {});
+      }
+    }
+  } else {
+    if (elements.dayVideo) {
+      elements.dayVideo.pause();
+      elements.dayVideo.removeAttribute("src");
+      elements.dayVideo.load();
+      elements.dayVideo.style.display = "none";
+      elements.dayVideo.setAttribute("aria-label", "");
+    }
+
+    if (elements.dayImage) {
+      elements.dayImage.style.display = "block";
+      elements.dayImage.src = media.src;
+      elements.dayImage.alt = media.alt || "";
+    }
+  }
+
   elements.imageCounter.textContent = `${activeImageIndex + 1} / ${activeDay.images.length}`;
 
   const hasMultiple = activeDay.images.length > 1;
@@ -147,8 +482,22 @@ function renderAmbient() {
 }
 
 function populateDayModal() {
-  if (!activeDay || !elements.dayDate || !elements.dayTitle || !elements.dayTheme) {
+  if (
+    !activeDay ||
+    !elements.dayDate ||
+    !elements.dayTitle ||
+    !elements.dayTheme ||
+    !elements.dayModal
+  ) {
     return;
+  }
+
+  const isValentineDay = activeDay.id === "valentines-day";
+  elements.dayModal.classList.toggle("is-valentine", isValentineDay);
+  if (isValentineDay) {
+    startValentineFireworks();
+  } else {
+    stopValentineFireworks();
   }
 
   const year = new Date().getFullYear();
@@ -183,8 +532,20 @@ function closeDayModal() {
     return;
   }
 
-  elements.dayModal.classList.remove("is-open");
+  elements.dayModal.classList.remove("is-open", "is-valentine");
   document.body.classList.remove("modal-open");
+  stopValentineFireworks();
+
+  if (elements.dayVideo) {
+    elements.dayVideo.pause();
+    elements.dayVideo.removeAttribute("src");
+    elements.dayVideo.load();
+    elements.dayVideo.style.display = "none";
+  }
+
+  if (elements.dayImage) {
+    elements.dayImage.style.display = "block";
+  }
 
   window.setTimeout(() => {
     if (elements.dayModal) {
@@ -233,223 +594,6 @@ function scheduleTimelineRefresh() {
   }, nextMidnight.getTime() - now.getTime());
 }
 
-function clearAudioAnimationHandles() {
-  if (audioState.fadeHandle) {
-    window.cancelAnimationFrame(audioState.fadeHandle);
-    audioState.fadeHandle = 0;
-  }
-
-  if (audioState.crossfadeHandle) {
-    window.cancelAnimationFrame(audioState.crossfadeHandle);
-    audioState.crossfadeHandle = 0;
-  }
-}
-
-function getCrossfadeWindowSeconds(track) {
-  if (!track || !Number.isFinite(track.duration) || track.duration <= 0) {
-    return DEFAULT_CROSSFADE_SECONDS;
-  }
-
-  return Math.min(DEFAULT_CROSSFADE_SECONDS, Math.max(1.4, track.duration * 0.22));
-}
-
-function animateTrackVolumes(transitions, durationMs, onComplete) {
-  if (!transitions.length) {
-    onComplete?.();
-    return;
-  }
-
-  if (audioState.fadeHandle) {
-    window.cancelAnimationFrame(audioState.fadeHandle);
-    audioState.fadeHandle = 0;
-  }
-
-  const startedAt = performance.now();
-  const safeDuration = Math.max(120, durationMs);
-
-  const frame = (now) => {
-    const progress = Math.min(1, (now - startedAt) / safeDuration);
-    transitions.forEach(({ track, from, to }) => {
-      if (!track) {
-        return;
-      }
-      track.volume = from + (to - from) * progress;
-    });
-
-    if (progress < 1) {
-      audioState.fadeHandle = window.requestAnimationFrame(frame);
-      return;
-    }
-
-    audioState.fadeHandle = 0;
-    onComplete?.();
-  };
-
-  audioState.fadeHandle = window.requestAnimationFrame(frame);
-}
-
-async function startLoopCrossfade(windowSeconds) {
-  if (
-    !audioState.enabled ||
-    audioState.isCrossfading ||
-    !audioState.activeTrack ||
-    !audioState.standbyTrack
-  ) {
-    return;
-  }
-
-  const fromTrack = audioState.activeTrack;
-  const toTrack = audioState.standbyTrack;
-  audioState.isCrossfading = true;
-
-  if (audioState.crossfadeHandle) {
-    window.cancelAnimationFrame(audioState.crossfadeHandle);
-    audioState.crossfadeHandle = 0;
-  }
-
-  toTrack.pause();
-  toTrack.currentTime = 0;
-  toTrack.volume = 0;
-
-  try {
-    await toTrack.play();
-  } catch (error) {
-    audioState.isCrossfading = false;
-    return;
-  }
-
-  const startedAt = performance.now();
-  const fadeDurationMs = Math.max(450, windowSeconds * 1000);
-
-  const step = (now) => {
-    if (!audioState.enabled) {
-      audioState.crossfadeHandle = 0;
-      audioState.isCrossfading = false;
-      return;
-    }
-
-    const progress = Math.min(1, (now - startedAt) / fadeDurationMs);
-    fromTrack.volume = TARGET_MUSIC_VOLUME * (1 - progress);
-    toTrack.volume = TARGET_MUSIC_VOLUME * progress;
-
-    if (progress < 1) {
-      audioState.crossfadeHandle = window.requestAnimationFrame(step);
-      return;
-    }
-
-    fromTrack.pause();
-    fromTrack.currentTime = 0;
-    fromTrack.volume = 0;
-    toTrack.volume = TARGET_MUSIC_VOLUME;
-
-    audioState.activeTrack = toTrack;
-    audioState.standbyTrack = fromTrack;
-    audioState.crossfadeHandle = 0;
-    audioState.isCrossfading = false;
-  };
-
-  audioState.crossfadeHandle = window.requestAnimationFrame(step);
-}
-
-function ensureMusicPlayers() {
-  if (audioState.playersReady || !elements.musicToggle) {
-    return audioState.playersReady;
-  }
-
-  const source = encodeURIComponent(MUSIC_TRACK_FILE);
-  const trackA = new Audio(source);
-  const trackB = new Audio(source);
-
-  const onTimeUpdate = (event) => {
-    const track = event.currentTarget;
-    if (!audioState.enabled || audioState.isCrossfading || track !== audioState.activeTrack) {
-      return;
-    }
-
-    if (!Number.isFinite(track.duration) || track.duration <= 0) {
-      return;
-    }
-
-    const fadeWindow = getCrossfadeWindowSeconds(track);
-    if (track.duration - track.currentTime <= fadeWindow + 0.04) {
-      startLoopCrossfade(fadeWindow);
-    }
-  };
-
-  [trackA, trackB].forEach((track) => {
-    track.preload = "auto";
-    track.loop = false;
-    track.volume = 0;
-    track.playsInline = true;
-    track.addEventListener("timeupdate", onTimeUpdate);
-  });
-
-  audioState.activeTrack = trackA;
-  audioState.standbyTrack = trackB;
-  audioState.playersReady = true;
-  return true;
-}
-
-async function setAmbientAudio(enabled) {
-  if (!elements.musicToggle || !ensureMusicPlayers()) {
-    return;
-  }
-
-  const activeTrack = audioState.activeTrack;
-  const standbyTrack = audioState.standbyTrack;
-  if (!activeTrack || !standbyTrack) {
-    return;
-  }
-
-  clearAudioAnimationHandles();
-  audioState.isCrossfading = false;
-
-  let nextEnabledState = enabled;
-
-  if (enabled) {
-    standbyTrack.pause();
-    standbyTrack.currentTime = 0;
-    standbyTrack.volume = 0;
-
-    try {
-      await activeTrack.play();
-    } catch (error) {
-      nextEnabledState = false;
-    }
-
-    if (nextEnabledState) {
-      animateTrackVolumes(
-        [
-          { track: activeTrack, from: activeTrack.volume, to: TARGET_MUSIC_VOLUME },
-          { track: standbyTrack, from: standbyTrack.volume, to: 0 }
-        ],
-        TOGGLE_FADE_DURATION_MS
-      );
-    }
-  } else {
-    animateTrackVolumes(
-      [
-        { track: activeTrack, from: activeTrack.volume, to: 0 },
-        { track: standbyTrack, from: standbyTrack.volume, to: 0 }
-      ],
-      TOGGLE_FADE_DURATION_MS,
-      () => {
-        activeTrack.pause();
-        standbyTrack.pause();
-        activeTrack.volume = 0;
-        standbyTrack.volume = 0;
-      }
-    );
-  }
-
-  audioState.enabled = nextEnabledState;
-  elements.musicToggle.setAttribute("aria-pressed", String(nextEnabledState));
-
-  if (elements.musicToggleLabel) {
-    elements.musicToggleLabel.textContent = nextEnabledState ? "Ambient On" : "Ambient Off";
-  }
-}
-
 function attachEventListeners() {
   elements.beginJourney?.addEventListener("click", () => {
     elements.timeline?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -484,10 +628,6 @@ function attachEventListeners() {
     if (modalOpen && event.key === "ArrowRight") {
       showNextImage();
     }
-  });
-
-  elements.musicToggle?.addEventListener("click", async () => {
-    await setAmbientAudio(!audioState.enabled);
   });
 }
 

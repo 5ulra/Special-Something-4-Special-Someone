@@ -13,11 +13,6 @@
     <link rel="stylesheet" href="styles/main.css" />
   </head>
   <body>
-    <button id="musicToggle" class="music-toggle" type="button" aria-pressed="false">
-      <span aria-hidden="true">♫</span>
-      <span id="musicToggleLabel">Ambient Off</span>
-    </button>
-
     <header class="hero" id="hero">
       <div class="hero-texture" aria-hidden="true">
         <span class="petal p1"></span>
@@ -50,6 +45,7 @@
 
     <div id="dayModal" class="day-modal" hidden>
       <div id="modalBackdrop" class="day-modal-backdrop"></div>
+      <canvas id="fireworksCanvas" class="fireworks-canvas" aria-hidden="true"></canvas>
       <article
         class="day-sheet"
         role="dialog"
@@ -69,6 +65,15 @@
           </button>
           <figure class="day-image-wrap">
             <img id="dayImage" src="" alt="" />
+            <video
+              id="dayVideo"
+              muted
+              loop
+              autoplay
+              playsinline
+              preload="metadata"
+              aria-label=""
+            ></video>
           </figure>
           <button id="nextImage" class="gallery-nav" type="button" aria-label="Next image">
             ›

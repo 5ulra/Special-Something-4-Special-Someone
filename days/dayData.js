@@ -16,7 +16,7 @@ export const valentineDays = [
         caption: "Our Rose Day memory."
       },
       {
-        src: "Images/20251226_124733.jpg",
+        src: "Images/Snapchat-1349517886.jpg",
         alt: "Rose Day memory photo 2",
         caption: "A gentle beginning."
       }
@@ -56,7 +56,8 @@ export const valentineDays = [
       "But hey, my boss lady\nI would embarrass myself a thousand times for you,\nwithout thinking twice.",
       "So here I go again.",
       "I can’t really pinpoint why I like you,\nbut I know that I do with all my heart.\nWith you, time moves faster.\nYour eyes keep me glued,\nyour presence fills my world with joy.\nEven the most delicious food\ndoesn’t feel the same without you by my side.\nAnd honestly,\nI can’t imagine anything without you in it.",
-      "So will you walk with me in this journey,\ntogether?"
+      "So will you have momos with me?",
+      "I love you, Boss lady!"
     ]
   },
   {
@@ -103,19 +104,23 @@ export const valentineDays = [
     ambientColor: "rgba(181, 153, 119, 0.22)",
     images: [
       {
-        src: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=1500&q=80",
-        alt: "Plush teddy bear on a soft bed",
-        caption: "Plush warmth."
+        src: "Images/Snapchat-236715143.jpg",
+        alt: "Teddy Day memory photo 1",
+        caption: "A warm smile."
       },
       {
-        src: "https://images.unsplash.com/photo-1478147427282-58a87a120781?auto=format&fit=crop&w=1500&q=80",
-        alt: "Cozy room with soft blankets",
-        caption: "Comfort in every corner."
+        src: "Images/Snapchat-1620302326.jpg",
+        alt: "Teddy Day memory photo 2",
+        caption: "Our playful comfort."
       }
     ],
     message: [
-      "If comfort had a shape, it would be a teddy — soft, warm, and endlessly reassuring.",
-      "And if love had a heartbeat, it would be yours — steady, kind, and close enough to make the world feel safe."
+      "Happy Teddy Day!",
+      "I know today is supposed to be about teddies,\nbut honestly we both know\nGodzilla wins.",
+      "Because love, with you, Sharmitha,\nisn’t just soft and cuddly.\nIt’s playful, a little wild,\nand weirdly comforting at the same time.",
+      "You make me laugh.\nAnd even on ordinary days,\nyou make things feel warmer.",
+      "So here’s to our version of Teddy Day\nno teddies, just us,\nand a Godzilla!",
+      "I love you, Cutie!"
     ]
   },
   {
@@ -130,20 +135,24 @@ export const valentineDays = [
     ambientColor: "rgba(149, 121, 150, 0.2)",
     images: [
       {
-        src: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=1500&q=80",
-        alt: "Two hands holding each other closely",
-        caption: "Hand-holding close-up."
+        src: "Images/IMG-20251228-WA0125.jpg",
+        alt: "Promise Day memory photo 1",
+        caption: "A promise in a glance."
       },
       {
-        src: "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=1500&q=80",
-        alt: "Couple walking on a quiet path",
-        caption: "Steady steps, shared direction."
+        src: "Images/IMG-20251228-WA0112.jpg",
+        alt: "Promise Day memory photo 2",
+        caption: "A promise kept."
       }
     ],
     message: [
-      "Today I make a promise that doesn’t need words anymore —",
-      "to be your calm, your laughter, your hand to hold when the sky isn’t kind.",
-      "I promise to honor this love with truth, loyalty, and warmth beyond measure."
+      "Happy Promise Day!",
+      "I can’t promise perfection\nI’m far from perfect.",
+      "But,\nI promise honesty,\npatience,\nand a whole lot of affection.",
+      "I promise to match your energy\non the good days,\nand especially on the hard ones.",
+      "I promise to grow with you,\nto listen to you\n(because honestly, I love your voice),\nto fight together when things feel tough,\nand to stand by you whenever you need me.",
+      "Not perfectly.\nJust sincerely.",
+      "I love you, princess!"
     ]
   },
   {
@@ -158,19 +167,25 @@ export const valentineDays = [
     ambientColor: "rgba(160, 137, 116, 0.2)",
     images: [
       {
-        src: "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?auto=format&fit=crop&w=1500&q=80",
-        alt: "Couple hugging in soft daylight",
-        caption: "Gentle embrace."
+        src: "Images/Snapchat-2106496207.mp4",
+        type: "video",
+        alt: "Hug Day memory video",
+        caption: "A memory that still feels alive."
       },
       {
-        src: "https://images.unsplash.com/photo-1518621012420-8f39f18f9d5a?auto=format&fit=crop&w=1500&q=80",
-        alt: "Warm cozy sweater embrace",
-        caption: "The comfort of belonging."
+        src: "Images/Snapchat-1976608974.jpg",
+        alt: "Hug Day memory photo 2",
+        caption: "Held, even from afar."
       }
     ],
     message: [
-      "A hug is more than arms wrapped around you —\nit’s the safety of home, the comfort of belonging, and the peace of being understood.",
-      "So here’s mine — a silent vow that I’m always here."
+      "Happy Hug Day!",
+      "I still remember that day,\nthe last day of the lab,\nwhen you held my arm.",
+      "I don’t think I ever told you enough\nhow that made me feel.",
+      "It felt complete.\nLike a puzzle piece quietly finding its place.",
+      "And even now, from a distance,\nwhen we talk,\nyou still hold me somehow.\nYou make me feel safe.\nYou make me feel held.",
+      "And that feeling means more than words.",
+      "I love you, sweetheart!"
     ]
   },
   {
@@ -185,21 +200,27 @@ export const valentineDays = [
     ambientColor: "rgba(178, 109, 123, 0.23)",
     images: [
       {
-        src: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1500&q=80",
-        alt: "Couple silhouette at sunset",
-        caption: "Sunset lips close."
+        src: "Images/Snapchat-1796622141.jpg",
+        alt: "Kiss Day memory photo 1",
+        caption: "That unforgettable day."
       },
       {
-        src: "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&w=1500&q=80",
-        alt: "Soft lights and close embrace",
-        caption: "A quiet spark."
+        src: "Images/20251226_143429.jpg",
+        alt: "Kiss Day memory photo 2",
+        caption: "A moment paused in time."
       }
     ],
     message: [
-      "A kiss isn’t just a touch —",
-      "it’s a thousand words that no language can capture,",
-      "a promise whispered without sound,",
-      "and a spark where time seems to pause."
+      "Happy Kiss Day!",
+      "What a day that was!! your birthday!",
+      "How we gently sent everyone away,\njust so we could sit at the tea shop\nand talk for a while.",
+      "I remember telling you\nthat I knew you were going to kiss me.\nI could sense it.",
+      "And then you did.",
+      "That parking lot,\nusually bright and busy,\nfelt strangely quiet that day.\nAlmost like the world stepped aside for us.",
+      "I still remember walking back,\nsmiling like an idiot the entire way.",
+      "Even now, thinking about it,\nmy hands shake a little\nbecause of how happy it made me feel.",
+      "That moment,\nI’ll never forget it.",
+      "I love you, Honey!"
     ]
   },
   {
@@ -214,20 +235,28 @@ export const valentineDays = [
     ambientColor: "rgba(198, 113, 131, 0.24)",
     images: [
       {
-        src: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=1500&q=80",
-        alt: "Heart-shaped lights on a warm background",
-        caption: "Hearts and soft sparkles."
+        src: "Images/WhatsApp Image 2026-02-08 at 10.39.41.jpeg",
+        alt: "Valentine's Day memory photo 1",
+        caption: "A memory worth holding close."
       },
       {
-        src: "https://images.unsplash.com/photo-1487412912498-0447578fcca8?auto=format&fit=crop&w=1500&q=80",
-        alt: "Couple under dreamy evening lights",
-        caption: "Forever feels like home."
+        src: "Images/20260102_161547.jpg",
+        alt: "Valentine's Day memory photo 2",
+        caption: "Us, in the quiet moments."
       }
     ],
     message: [
-      "If love were a journey, you’d be my destination.",
-      "You are the laughter in my mornings, the peace in my nights,\nand the warmth that makes every day feel like hope.",
-      "With you, forever doesn’t sound long — it sounds like home."
+      "Happy Valentine’s Day!",
+      "Honestly, I still don’t fully understand the craze.\nBut with you,\neverything somehow starts making sense.",
+      "For a whole week after we started talking,\nI couldn’t believe it was really happening.\nI remember asking you again and again,\n“This isn’t a dream, right?”",
+      "I was a stone,\nnonchalant, distant,\nmaybe still a little.",
+      "But you melted me.",
+      "You taught me how to express.\nYou made me feel special.\nYou picked me up and, without even saying it out loud,\nshowed me that I matter to you.",
+      "I still think about the lab days sometimes,\nsneaking out during breaks,\nwalking around campus,\ngrabbing a drink and sitting by the basketball court.\nTalking…\nor sometimes just sitting in silence with you\nfelt like everything.\nThose memories are so dear to me.\nThinking about them fills my heart in the quietest, happiest way.",
+      "So here I am,\nnot loud,\nnot dramatic,\njust honest.",
+      "I’m not asking for forever all at once.\nJust you and me, today,\nand every day that follows.",
+      "To many more Valentine’s to come.",
+      "I love you, Sharmitha!\nSincerely yours,\nBodi / Bekuf"
     ]
   }
 ];

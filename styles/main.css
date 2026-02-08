@@ -68,38 +68,6 @@ p {
   margin: 0;
 }
 
-.music-toggle {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 30;
-  border: 1px solid rgba(193, 140, 123, 0.42);
-  border-radius: 999px;
-  padding: 0.5rem 0.95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(255, 250, 243, 0.88);
-  color: var(--text-main);
-  font-family: "Playfair Display", serif;
-  font-size: 0.86rem;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  box-shadow: 0 10px 22px rgba(137, 101, 93, 0.15);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
-}
-
-.music-toggle:hover {
-  transform: translateY(-2px);
-  border-color: rgba(193, 140, 123, 0.62);
-  box-shadow: 0 14px 28px rgba(137, 101, 93, 0.2);
-}
-
-.music-toggle[aria-pressed="true"] {
-  background: rgba(255, 248, 241, 0.96);
-  border-color: rgba(193, 140, 123, 0.78);
-}
-
 .hero {
   min-height: 100svh;
   position: relative;
@@ -395,15 +363,27 @@ p {
 .day-modal-backdrop {
   position: absolute;
   inset: 0;
+  z-index: 0;
   background: rgba(103, 74, 69, 0.34);
   backdrop-filter: blur(4px);
   opacity: 0;
   transition: opacity 0.24s ease;
 }
 
+.fireworks-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
 .day-sheet {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(980px, 100%);
   max-height: 90svh;
   overflow: auto;
@@ -420,6 +400,14 @@ p {
 
 .day-modal.is-open .day-modal-backdrop {
   opacity: 1;
+}
+
+.day-modal.is-open.is-fireworks .fireworks-canvas {
+  opacity: 0.98;
+}
+
+.day-modal.is-open.is-fireworks .day-modal-backdrop {
+  background: rgba(34, 21, 40, 0.54);
 }
 
 .day-modal.is-open .day-sheet {
@@ -494,6 +482,20 @@ p {
   object-position: center;
   background: #f0e8dd;
   display: block;
+}
+
+.day-image-wrap video {
+  width: 100%;
+  height: min(70vh, 640px);
+  object-fit: contain;
+  object-position: center;
+  background: #f0e8dd;
+  display: none;
+}
+
+.day-modal.is-valentine .day-image-wrap img,
+.day-modal.is-valentine .day-image-wrap video {
+  height: min(78vh, 760px);
 }
 
 .gallery-nav {
